@@ -34,7 +34,7 @@
             // 
             // TB_Result
             // 
-            this.TB_Result.Location = new System.Drawing.Point(445, 253);
+            this.TB_Result.Location = new System.Drawing.Point(445, 347);
             this.TB_Result.Name = "TB_Result";
             this.TB_Result.Size = new System.Drawing.Size(208, 20);
             this.TB_Result.TabIndex = 0;
@@ -45,9 +45,8 @@
             this.B_Display_DeadEnd.Name = "B_Display_DeadEnd";
             this.B_Display_DeadEnd.Size = new System.Drawing.Size(208, 23);
             this.B_Display_DeadEnd.TabIndex = 1;
-            this.B_Display_DeadEnd.Text = "button1";
+            this.B_Display_DeadEnd.Text = "Display Dead End town";
             this.B_Display_DeadEnd.UseVisualStyleBackColor = true;
-            this.B_Display_DeadEnd.Click += new System.EventHandler(this.B_Display_DeadEnd_Click);
             // 
             // Form1
             // 
