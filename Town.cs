@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace ReseauRoutier
+namespace road_network
 {
-    class Town : GenericNode
+    public class Town
     {
-        private List<Road> listRoad;
-
-        public Town( string newname ) : base(newname)
+        string name;
+        List<coupleItem<Town,double>> neigh;
+        public Town(string tname)
         {
-            listRoad = new List<Road>();
+            neigh = new List<coupleItem<Town,double>>();
+            name = tname;
         }
-
-        public void AddRoad(Road road)
+        public void addNeigh(Town t, double cost)
         {
-            listRoad.Add(road);
+            neigh.Add(new coupleItem<Town,double>(t, cost));
         }
-
-        public override double GetArcCost(GenericNode N2) 
+        public List<coupleItem<Town,double>> getNeigh()
         {
-            return 0;
+            return neigh;
         }
-        
-        public override bool EndState() 
+        public string getName()
         {
-            return false;
+            return name;
         }
-        
-        public override List<GenericNode> GetListSucc() 
+        public override string ToString()
         {
-            return new List<GenericNode>();
+            return name;
         }
-        
-        public override void CalculeHCost()
-        {}
+        public int nbNeighbor()
+        {
+            return neigh.Count;
+        }
     }
 }

@@ -1,16 +1,16 @@
-﻿namespace ReseauRoutier
+﻿namespace road_network
 {
     partial class Form1
     {
         /// <summary>
-        /// Required designer variable.
+        /// Variable nécessaire au concepteur.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Nettoyage des ressources utilisées.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,51 +20,85 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Code généré par le Concepteur Windows Form
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
         /// </summary>
         private void InitializeComponent()
         {
-            this.TB_Result = new System.Windows.Forms.TextBox();
-            this.B_Display_DeadEnd = new System.Windows.Forms.Button();
+            this.treeRes = new System.Windows.Forms.TreeView();
+            this.lRes = new System.Windows.Forms.Label();
+            this.cbStart = new System.Windows.Forms.ComboBox();
+            this.cbEnd = new System.Windows.Forms.ComboBox();
+            this.btnAstar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // TB_Result
+            // treeRes
             // 
-            this.TB_Result.Location = new System.Drawing.Point(445, 347);
-            this.TB_Result.Name = "TB_Result";
-            this.TB_Result.Size = new System.Drawing.Size(208, 20);
-            this.TB_Result.TabIndex = 0;
+            this.treeRes.Location = new System.Drawing.Point(267, 12);
+            this.treeRes.Name = "treeRes";
+            this.treeRes.Size = new System.Drawing.Size(238, 252);
+            this.treeRes.TabIndex = 0;
             // 
-            // B_Display_DeadEnd
+            // lRes
             // 
-            this.B_Display_DeadEnd.Location = new System.Drawing.Point(445, 307);
-            this.B_Display_DeadEnd.Name = "B_Display_DeadEnd";
-            this.B_Display_DeadEnd.Size = new System.Drawing.Size(208, 23);
-            this.B_Display_DeadEnd.TabIndex = 1;
-            this.B_Display_DeadEnd.Text = "Display Dead End town";
-            this.B_Display_DeadEnd.UseVisualStyleBackColor = true;
+            this.lRes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lRes.Location = new System.Drawing.Point(267, 293);
+            this.lRes.Name = "lRes";
+            this.lRes.Size = new System.Drawing.Size(238, 157);
+            this.lRes.TabIndex = 1;
+            // 
+            // cbStart
+            // 
+            this.cbStart.FormattingEnabled = true;
+            this.cbStart.Location = new System.Drawing.Point(27, 357);
+            this.cbStart.Name = "cbStart";
+            this.cbStart.Size = new System.Drawing.Size(210, 21);
+            this.cbStart.TabIndex = 2;
+            // 
+            // cbEnd
+            // 
+            this.cbEnd.FormattingEnabled = true;
+            this.cbEnd.Location = new System.Drawing.Point(27, 395);
+            this.cbEnd.Name = "cbEnd";
+            this.cbEnd.Size = new System.Drawing.Size(210, 21);
+            this.cbEnd.TabIndex = 3;
+            // 
+            // btnAstar
+            // 
+            this.btnAstar.Location = new System.Drawing.Point(27, 426);
+            this.btnAstar.Name = "btnAstar";
+            this.btnAstar.Size = new System.Drawing.Size(210, 23);
+            this.btnAstar.TabIndex = 4;
+            this.btnAstar.Text = "A* algo";
+            this.btnAstar.UseVisualStyleBackColor = true;
+            this.btnAstar.Click += new System.EventHandler(this.btnAstar_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(720, 421);
-            this.Controls.Add(this.B_Display_DeadEnd);
-            this.Controls.Add(this.TB_Result);
+            this.ClientSize = new System.Drawing.Size(517, 474);
+            this.Controls.Add(this.btnAstar);
+            this.Controls.Add(this.cbEnd);
+            this.Controls.Add(this.cbStart);
+            this.Controls.Add(this.lRes);
+            this.Controls.Add(this.treeRes);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox TB_Result;
-        private System.Windows.Forms.Button B_Display_DeadEnd;
+        private System.Windows.Forms.TreeView treeRes;
+        private System.Windows.Forms.Label lRes;
+        private System.Windows.Forms.ComboBox cbStart;
+        private System.Windows.Forms.ComboBox cbEnd;
+        private System.Windows.Forms.Button btnAstar;
     }
 }
+
