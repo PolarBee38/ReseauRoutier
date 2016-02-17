@@ -16,6 +16,9 @@ namespace road_network
         public List<Town> nodes() {
             return towns;
         }
+
+        //Return : if the town is next door, return the road cost, else, return 0.
+        //Variables : node1 the town we come frome, node2 the town we are going to
         public double getCost(Town node1, Town node2)
         {
             foreach(coupleItem<Town,double> road in node1.getNeigh())
@@ -60,6 +63,19 @@ namespace road_network
         public int nbNeighbor(Town node)
         {
             return node.nbNeighbor();
+        }
+
+        public List<Town> getRemoteTown()
+        {
+            List<Town> l = new List<Town>();
+            foreach (Town t in towns)
+            {
+                if (t.nbNeighbor() == 1)
+                {
+                    l.Add(t);
+                }
+            }
+            return l;
         }
        
     }

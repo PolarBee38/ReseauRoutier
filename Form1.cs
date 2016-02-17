@@ -99,8 +99,6 @@ namespace road_network
             }
             cbStart.SelectedIndex = 0;
             cbEnd.SelectedIndex = 0;
-
-                      
         }
 
         private void btnAstar_Click(object sender, EventArgs e)

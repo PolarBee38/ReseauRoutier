@@ -22,6 +22,7 @@ namespace road_network
         {
             return 0;
         }
+
         public static astarResult<TNode> astar<TNode>  (IGraph<TNode> graph, TNode from, TNode to, heuristicMethod<TNode> heuristic = null, TreeView path = null)
         {
             if (heuristic == null)

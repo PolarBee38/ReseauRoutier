@@ -80,7 +80,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(517, 474);
+            this.ClientSize = new System.Drawing.Size(524, 475);
             this.Controls.Add(this.btnAstar);
             this.Controls.Add(this.cbEnd);
             this.Controls.Add(this.cbStart);
