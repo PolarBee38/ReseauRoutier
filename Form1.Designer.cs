@@ -33,6 +33,8 @@
             this.cbStart = new System.Windows.Forms.ComboBox();
             this.cbEnd = new System.Windows.Forms.ComboBox();
             this.btnAstar = new System.Windows.Forms.Button();
+            this.checkedListBoxFarm = new System.Windows.Forms.CheckedListBox();
+            this.btnTour = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // treeRes
@@ -76,11 +78,32 @@
             this.btnAstar.UseVisualStyleBackColor = true;
             this.btnAstar.Click += new System.EventHandler(this.btnAstar_Click);
             // 
+            // checkedListBoxFarm
+            // 
+            this.checkedListBoxFarm.CheckOnClick = true;
+            this.checkedListBoxFarm.FormattingEnabled = true;
+            this.checkedListBoxFarm.Location = new System.Drawing.Point(27, 13);
+            this.checkedListBoxFarm.Name = "checkedListBoxFarm";
+            this.checkedListBoxFarm.Size = new System.Drawing.Size(210, 259);
+            this.checkedListBoxFarm.TabIndex = 5;
+            // 
+            // btnTour
+            // 
+            this.btnTour.Location = new System.Drawing.Point(27, 279);
+            this.btnTour.Name = "btnTour";
+            this.btnTour.Size = new System.Drawing.Size(210, 23);
+            this.btnTour.TabIndex = 6;
+            this.btnTour.Text = "Cities Tour";
+            this.btnTour.UseVisualStyleBackColor = true;
+            this.btnTour.Click += new System.EventHandler(this.btnTour_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(524, 475);
+            this.Controls.Add(this.btnTour);
+            this.Controls.Add(this.checkedListBoxFarm);
             this.Controls.Add(this.btnAstar);
             this.Controls.Add(this.cbEnd);
             this.Controls.Add(this.cbStart);
@@ -99,6 +122,8 @@
         private System.Windows.Forms.ComboBox cbStart;
         private System.Windows.Forms.ComboBox cbEnd;
         private System.Windows.Forms.Button btnAstar;
+        private System.Windows.Forms.CheckedListBox checkedListBoxFarm;
+        private System.Windows.Forms.Button btnTour;
     }
 }
 

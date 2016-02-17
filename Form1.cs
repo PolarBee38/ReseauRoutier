@@ -12,11 +12,10 @@ namespace road_network
 {
     public partial class Form1 : Form
     {
-        roadMapGraph graph;
+        roadMapGraph graph= new roadMapGraph();
         public Form1()
         {
             InitializeComponent();
-            graph = new roadMapGraph();
             Town a = graph.addTown("ville A");
             Town b = graph.addTown("ville B");
             Town c = graph.addTown("ville C");
@@ -92,13 +91,25 @@ namespace road_network
             //v
             graph.addRoad(v, w, 6);
 
+            //Initialize checkBoxItems
+            var items = checkedListBoxFarm.Items;
             foreach (Town town in graph.nodes())
             {
+                if(false) //If the town is a farm, we check the town
+                {
+                    items.Add(town, true);
+                }
+                else
+                {
+                    items.Add(town);
+                }
                 cbStart.Items.Add(town);
                 cbEnd.Items.Add(town);
             }
             cbStart.SelectedIndex = 0;
             cbEnd.SelectedIndex = 0;
+
+            
         }
 
         private void btnAstar_Click(object sender, EventArgs e)
@@ -115,6 +126,21 @@ namespace road_network
             }
             lRes.Text += "\nTotal cost : " + searchRes.totalCost;
             lRes.Text += "\n" + searchRes.visitedNodes + " villes visitées."+"\n routes testées: "+searchRes.testedArcs;
+        }
+
+        private void btnTour_Click(object sender, EventArgs e)
+        {
+            List<Town> listTown = new List<Town>();
+            List<List<Town>> listPath;
+            roadMapGraph newGraph;
+            foreach (object itemChecked in checkedListBoxFarm.CheckedItems)
+            {
+                listTown.Add((Town)itemChecked);
+                //MessageBox.Show("Item with title: \"" + itemChecked.ToString() + " is checked. Checked state is: " + checkedListBoxFarm.GetItemCheckState(checkedListBoxFarm.Items.IndexOf(itemChecked)).ToString() + "."); 
+            }
+            newGraph = graph.newSubMap(listTown, out listPath);
+
+
         }
     }
 }

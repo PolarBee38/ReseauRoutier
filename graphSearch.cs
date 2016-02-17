@@ -15,6 +15,7 @@ namespace road_network
         public double totalCost;
         public List<TNode> sPath;
     }
+
     public static class graphSearch
     {
         //default heuristic <=> Dijkstrat
@@ -111,6 +112,13 @@ namespace road_network
             sRes.totalCost = fromNode[to].getValue();
             //return results
             return sRes;
+        }
+
+        public static double GloutonHeuristique<TNode> (IGraph<TNode> graph)
+        {
+            double heuristic = 0;
+
+            return heuristic;
         }
     }
 }
