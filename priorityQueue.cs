@@ -43,15 +43,32 @@ namespace road_network
         }
         public T dequeue()
         {
+            double a;
+            return dequeue(out a);
+        }
+        public T dequeue(out double priority)
+        {
+            priority = 0;
             if (queue.Count >= 1)
             {
                 T item = queue[0].getItem();
+                priority = queue[0].getValue();
                 queue.RemoveAt(0);
                 return item;
             }
             return default(T);
         }
-        
-       
+        public List<coupleItem<T, double>> getList()
+        {
+            return queue;
+        }
+      
+        public int Count
+        {
+            get
+            {
+                return queue.Count;
+            }
+        }
     }
 }

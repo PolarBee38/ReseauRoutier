@@ -8,29 +8,55 @@ using System.Windows.Forms;
 
 namespace road_network
 {
-    public struct astarResult<TNode>
+    public struct searchResult<TNode>
     {
         public int visitedNodes;
         public int testedArcs;
         public double totalCost;
         public List<TNode> sPath;
     }
-
+    
     public static class graphSearch
     {
+
         //default heuristic <=> Dijkstrat
         private static double zero<TNode>(TNode n1, TNode n2)
         {
             return 0;
         }
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, heuristicMethod<TNode> heuristic = null) where TNode : GraphNode
+        {
+            shortestSubGraph<TNode> sg = new shortestSubGraph<TNode>(graph, subset);
+            return tourSearch(sg, subset[0], heuristic);
+        }
 
-        public static astarResult<TNode> astar<TNode>  (IGraph<TNode> graph, TNode from, TNode to, heuristicMethod<TNode> heuristic = null, TreeView path = null)
+        //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
+        public static searchResult<TNode> tourSearch<TNode>(shortestSubGraph<TNode> graph, TNode start, heuristicMethod<TNode> heuristic = null) where TNode : GraphNode
+        {
+            //return value strucure:
+            searchResult<TNode> sRes = new searchResult<TNode>();
+            sRes.visitedNodes = 0;
+            sRes.testedArcs = 0;
+            sRes.sPath = new List<TNode>();
+
+            //Parcours a faire
+            //è_é
+
+
+
+
+
+            return sRes;
+        }
+
+        //astar algorithm
+        public static searchResult<TNode> astar<TNode>  (IGraph<TNode> graph, TNode from, TNode to, heuristicMethod<TNode> heuristic = null, TreeView path = null) where TNode :GraphNode
         {
             if (heuristic == null)
                 heuristic = graphSearch.zero;
             
             //return value strucure:
-            astarResult<TNode> sRes = new astarResult<TNode>();
+            searchResult<TNode> sRes = new searchResult<TNode>();
             sRes.visitedNodes = 0;
             sRes.testedArcs = 0;
             sRes.sPath = new List<TNode>();
@@ -86,7 +112,7 @@ namespace road_network
                         sRes.testedArcs++;
                         fromNode[next] = new coupleItem<TNode,double>(current, totalCost);
                         //add node to openNodes
-                        openNodes.enqueue(next, totalCost + heuristic(current, next));
+                        openNodes.enqueue(next, totalCost + heuristic(next, to));
 
                         //*
                         if (path != null)
@@ -114,7 +140,7 @@ namespace road_network
             return sRes;
         }
 
-        public static double GloutonHeuristique<TNode> (IGraph<TNode> graph)
+        public static double GloutonHeuristique<TNode> (IGraph<TNode> graph) where TNode : GraphNode
         {
             double heuristic = 0;
 

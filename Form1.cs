@@ -12,33 +12,33 @@ namespace road_network
 {
     public partial class Form1 : Form
     {
-        roadMapGraph graph= new roadMapGraph();
+        genericGraph<Town> graph= new genericGraph<Town>();
         public Form1()
         {
             InitializeComponent();
-            Town a = graph.addTown("ville A");
-            Town b = graph.addTown("ville B");
-            Town c = graph.addTown("ville C");
-            Town d = graph.addTown("ville D");
-            Town e = graph.addTown("ville E");
-            Town f = graph.addTown("ville F");
-            Town g = graph.addTown("ville G");
-            Town h = graph.addTown("ville H");
-            Town i = graph.addTown("ville I");
-            Town j = graph.addTown("ville J");
-            Town k = graph.addTown("ville K");
-            Town l = graph.addTown("ville L");
-            Town m = graph.addTown("ville M");
-            Town n = graph.addTown("ville N");
-            Town o = graph.addTown("ville O");
-            Town p = graph.addTown("ville P");
-            Town q = graph.addTown("ville Q");
-            Town r = graph.addTown("ville R");
-            Town s = graph.addTown("ville S");
-            Town t = graph.addTown("ville T");
-            Town u = graph.addTown("ville U");
-            Town v = graph.addTown("ville V");
-            Town w = graph.addTown("ville W");
+            Town a = graph.addTown(new Town("ville A"));
+            Town b = graph.addTown(new Town("ville B"));
+            Town c = graph.addTown(new Town("ville C"));
+            Town d = graph.addTown(new Town("ville D"));
+            Town e = graph.addTown(new Town("ville E"));
+            Town f = graph.addTown(new Town("ville F"));
+            Town g = graph.addTown(new Town("ville G"));
+            Town h = graph.addTown(new Town("ville H"));
+            Town i = graph.addTown(new Town("ville I"));
+            Town j = graph.addTown(new Town("ville J"));
+            Town k = graph.addTown(new Town("ville K"));
+            Town l = graph.addTown(new Town("ville L"));
+            Town m = graph.addTown(new Town("ville M"));
+            Town n = graph.addTown(new Town("ville N"));
+            Town o = graph.addTown(new Town("ville O"));
+            Town p = graph.addTown(new Town("ville P"));
+            Town q = graph.addTown(new Town("ville Q"));
+            Town r = graph.addTown(new Town("ville R"));
+            Town s = graph.addTown(new Town("ville S"));
+            Town t = graph.addTown(new Town("ville T"));
+            Town u = graph.addTown(new Town("ville U"));
+            Town v = graph.addTown(new Town("ville V"));
+            Town w = graph.addTown(new Town("ville W"));
             //a
             graph.addRoad(a, b, 4);
             graph.addRoad(a, c, 5);
@@ -92,16 +92,15 @@ namespace road_network
             graph.addRoad(v, w, 6);
 
             //Initialize checkBoxItems
-            var items = checkedListBoxFarm.Items;
             foreach (Town town in graph.nodes())
             {
                 if(false) //If the town is a farm, we check the town
                 {
-                    items.Add(town, true);
+                    checkedListBoxFarm.Items.Add(town, true);
                 }
                 else
                 {
-                    items.Add(town);
+                    checkedListBoxFarm.Items.Add(town);
                 }
                 cbStart.Items.Add(town);
                 cbEnd.Items.Add(town);
@@ -116,7 +115,7 @@ namespace road_network
         {
             Town st = (Town)cbStart.SelectedItem;
             Town end = (Town)cbEnd.SelectedItem;
-            astarResult<Town> searchRes = graphSearch.astar(graph, st, end, null, treeRes);
+            searchResult<Town> searchRes = graphSearch.astar(graph, st, end, null, treeRes);
             lRes.Text = "";
             for (int i = 1; i < searchRes.sPath.Count; ++i)
             {
@@ -132,14 +131,25 @@ namespace road_network
         {
             List<Town> listTown = new List<Town>();
             List<List<Town>> listPath;
-            roadMapGraph newGraph;
+            genericGraph<Town> newGraph;
             foreach (object itemChecked in checkedListBoxFarm.CheckedItems)
             {
                 listTown.Add((Town)itemChecked);
-                //MessageBox.Show("Item with title: \"" + itemChecked.ToString() + " is checked. Checked state is: " + checkedListBoxFarm.GetItemCheckState(checkedListBoxFarm.Items.IndexOf(itemChecked)).ToString() + "."); 
             }
-            newGraph = graph.newSubMap(listTown, out listPath);
+            //newGraph = graph.newSubMap(listTown, out listPath);
+            lRes.Text = "";
+            shortestSubGraph<Town> sg = new shortestSubGraph<Town>(graph, listTown);
 
+            /*
+            //test pour afficher es voisins du nouveau graphe
+            List<coupleItem<Town, double>> neigh = sg.neighbor(sg.nodes()[0]).ToList();
+            int nbElem = neigh.Count;
+            for(int i = 0;i< nbElem;++i)
+            {
+                lRes.Text += neigh[i].getItem().ToString() + " : " + neigh[i].getValue() + "\n";
+               
+            }
+            */
 
         }
     }
