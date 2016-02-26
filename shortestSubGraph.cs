@@ -54,12 +54,11 @@ namespace road_network
 
                     //check for shortest path
                     searchResult<T> res = graphSearch.astar(graph, startNode, destNode);
+                    visitedNodes += res.visitedNodes;
+                    testedAcs += res.testedArcs;
+
                     //path without start and dest
                     List<T> slist = res.sPath.GetRange(1, res.sPath.Count - 2);
-
-                    //don't add an arc if passing by one node in the subset (exept startNode and destNode)
-                    if (slist.Intersect(subset).Any())
-                        continue;
 
                     //copy of the result for start to end and end to start
                     searchResult<T> rescpy = new searchResult<T>();
@@ -73,12 +72,16 @@ namespace road_network
                     //store shortest path
                     shortestPath[startNode][destNode] = res;
                     shortestPath[destNode][startNode] = rescpy;
+
+                    //don't add an arc if passing by one node in the subset (exept startNode and destNode)
+                    if (slist.Intersect(subset).Any())
+                        continue;
+
                     //add arcs to graph
                     arcs[startNode].enqueue(destNode,res.totalCost);
                     arcs[destNode].enqueue(startNode, res.totalCost);
 
-                    visitedNodes += res.visitedNodes;
-                    testedAcs += res.testedArcs;
+                    
 
                 }
             }
@@ -93,7 +96,30 @@ namespace road_network
             else
                 return 0;
         }
-
+        public void removeArc(T n1, T n2)
+        {
+            priorityQueue<T> listNeigh;
+            if (arcs.TryGetValue(n1, out listNeigh))
+            {
+                listNeigh.removeItem(n2);
+            }
+        }
+        public void removeArcAt(T n1, int i)
+        {
+            priorityQueue<T> listNeigh;
+            if (arcs.TryGetValue(n1, out listNeigh))
+            {
+                listNeigh.removeAt(i);
+            }
+        }
+        public void addArc(T n1, T n2, double cost)
+        {
+            priorityQueue<T> listNeigh;
+            if (!arcs.TryGetValue(n1, out listNeigh))
+                arcs[n1] = new priorityQueue<T>();
+            listNeigh.enqueue(new coupleItem<T, double>(n2, cost));
+        }
+        
         public IEnumerable<coupleItem<T, double>> neighbor(T node)
         {
             priorityQueue<T> listNeigh;
@@ -102,6 +128,10 @@ namespace road_network
             return null;
         }
 
+        public int nbNodes()
+        {
+            return arcs.Keys.Count;
+        }
         public List<T> nodes()
         {
             return new List<T>(arcs.Keys);

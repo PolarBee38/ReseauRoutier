@@ -41,6 +41,15 @@ namespace road_network
                 queue.Insert(index, item);
 
         }
+        public void removeAt(int i)
+        {
+            queue.RemoveAt(i);
+        }
+        public void removeItem(T it)
+        {
+            var item = queue.SingleOrDefault(ci => ci.getItem().Equals(it));
+            queue.Remove(item);
+        }
         public T dequeue()
         {
             double a;

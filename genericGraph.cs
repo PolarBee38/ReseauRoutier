@@ -76,33 +76,5 @@ namespace road_network
             }
             return l;
         }
-        /*
-        public roadMapGraph newSubMap(List<Town> newListTowns, out List<List<Town>> listPath)
-        {
-            roadMapGraph newRoadMap = new roadMapGraph();
-            int i, j, length = newListTowns.Count();
-            Town t1, t2;
-            listPath = new List<List<Town>>();
-            foreach (Town t in towns)
-            { 
-                newRoadMap.addTown(t.getName());
-            }
-
-            for(i=0;i<length;i++)
-            {
-                t1 = newListTowns[i];
-                for(j=i;j<length;j++)
-                {
-                    t2 = newListTowns[j];
-                    if (newRoadMap.getCost(t1, t2) == 0)
-                    {
-                        searchResult<Town> searchRes = graphSearch.astar(newRoadMap, t1, t2);
-                        listPath.Add(searchRes.sPath);
-                    }
-                }
-            }            
-            return newRoadMap;
-        }
-       */
     }
 }

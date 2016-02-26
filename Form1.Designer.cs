@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.treeRes = new System.Windows.Forms.TreeView();
-            this.lRes = new System.Windows.Forms.Label();
             this.cbStart = new System.Windows.Forms.ComboBox();
             this.cbEnd = new System.Windows.Forms.ComboBox();
             this.btnAstar = new System.Windows.Forms.Button();
             this.checkedListBoxFarm = new System.Windows.Forms.CheckedListBox();
             this.btnTour = new System.Windows.Forms.Button();
+            this.lRes = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // treeRes
@@ -43,14 +43,6 @@
             this.treeRes.Name = "treeRes";
             this.treeRes.Size = new System.Drawing.Size(238, 252);
             this.treeRes.TabIndex = 0;
-            // 
-            // lRes
-            // 
-            this.lRes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lRes.Location = new System.Drawing.Point(267, 293);
-            this.lRes.Name = "lRes";
-            this.lRes.Size = new System.Drawing.Size(238, 157);
-            this.lRes.TabIndex = 1;
             // 
             // cbStart
             // 
@@ -97,33 +89,43 @@
             this.btnTour.UseVisualStyleBackColor = true;
             this.btnTour.Click += new System.EventHandler(this.btnTour_Click);
             // 
+            // lRes
+            // 
+            this.lRes.Location = new System.Drawing.Point(267, 282);
+            this.lRes.Multiline = true;
+            this.lRes.Name = "lRes";
+            this.lRes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.lRes.Size = new System.Drawing.Size(238, 368);
+            this.lRes.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 475);
+            this.ClientSize = new System.Drawing.Size(524, 662);
+            this.Controls.Add(this.lRes);
             this.Controls.Add(this.btnTour);
             this.Controls.Add(this.checkedListBoxFarm);
             this.Controls.Add(this.btnAstar);
             this.Controls.Add(this.cbEnd);
             this.Controls.Add(this.cbStart);
-            this.Controls.Add(this.lRes);
             this.Controls.Add(this.treeRes);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.TreeView treeRes;
-        private System.Windows.Forms.Label lRes;
         private System.Windows.Forms.ComboBox cbStart;
         private System.Windows.Forms.ComboBox cbEnd;
         private System.Windows.Forms.Button btnAstar;
         private System.Windows.Forms.CheckedListBox checkedListBoxFarm;
         private System.Windows.Forms.Button btnTour;
+        private System.Windows.Forms.TextBox lRes;
     }
 }
 

@@ -8,8 +8,15 @@ using System.Windows.Forms;
 
 namespace road_network
 {
-    public struct searchResult<TNode>
+    public class searchResult<TNode>
     {
+        public searchResult()
+        {
+            visitedNodes = 0;
+            testedArcs = 0;
+            totalCost = 0;
+            sPath = new List<TNode>();
+        }
         public int visitedNodes;
         public int testedArcs;
         public double totalCost;
@@ -24,29 +31,85 @@ namespace road_network
         {
             return 0;
         }
-        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, heuristicMethod<TNode> heuristic = null) where TNode : GraphNode
-        {
-            shortestSubGraph<TNode> sg = new shortestSubGraph<TNode>(graph, subset);
-            return tourSearch(sg, subset[0], heuristic);
-        }
 
         //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
-        public static searchResult<TNode> tourSearch<TNode>(shortestSubGraph<TNode> graph, TNode start, heuristicMethod<TNode> heuristic = null) where TNode : GraphNode
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset) where TNode : GraphNode
         {
-            //return value strucure:
+            shortestSubGraph<TNode> sGraph = new shortestSubGraph<TNode>(graph, subset);
+            TNode start = subset[0];
+            //return value class:
             searchResult<TNode> sRes = new searchResult<TNode>();
-            sRes.visitedNodes = 0;
-            sRes.testedArcs = 0;
-            sRes.sPath = new List<TNode>();
+            
 
-            //Parcours a faire
-            //è_é
+            //variables for the recurisve search function
+            Dictionary<TNode, int> passedBy = new Dictionary<TNode, int>();
+            foreach (TNode n in sGraph.nodes())
+                passedBy[n] = 0;
+            passedBy[start] = 1;
+            List<TNode> currentPath = new List<TNode>();
+            currentPath.Add(start);
+            double heurValue = double.PositiveInfinity;
 
+            //Recursive call
+            recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref heurValue);
 
-
-
-
+            //add cost from last to start
+            sRes.totalCost = heurValue + sGraph.getCost(sRes.sPath.Last(), start);
+            //add start at the end
+            sRes.sPath.Add(start);
+            //construct sub paths
+            List<TNode> result = new List<TNode>();
+            for(int i = 1; i<sRes.sPath.Count; ++i)
+            {
+                List<TNode> subPath = sGraph.sPath(sRes.sPath[i - 1], sRes.sPath[i]);
+                subPath = subPath.GetRange(0, subPath.Count - 1);
+                result.AddRange(subPath);
+            }
+            sRes.sPath = result;
+            //TODO:
+            //maybe add cost of precomputation to node and arc visited ?
+           
+            result.Add(start);
             return sRes;
+        }
+        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref Dictionary<TNode,int> passedBy, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double heurValue) where TNode :GraphNode
+        {
+            //if all node visited, return
+            int newNodeVisited = passedBy.Count(x => x.Value > 0);
+            if (newNodeVisited >= graph.nbNodes())
+            {
+                res.sPath = new List<TNode>(currentPath);
+                heurValue = res.totalCost;
+                return;
+            }
+            res.visitedNodes++;
+            //iterate over neighbor of curent node
+            List<coupleItem<TNode, double>> arcs = graph.neighbor(currentNode).ToList();
+            for( int i = 0; i<graph.neighbor(currentNode).Count();++i)
+            {
+                TNode next = arcs[i].getItem();
+                double cost = arcs[i].getValue();
+                //stop research if next iteration will be worst than the better result found
+                if (cost + res.totalCost >= heurValue)
+                    continue;
+                res.testedArcs++;
+
+                //update variables
+                passedBy[next]++;
+                currentPath.Add(next);
+                res.totalCost += cost;
+                //remove the arc
+                graph.removeArcAt(currentNode, i);
+                //recursive call
+                recTourSearch(graph, next, ref passedBy, ref currentPath, ref res, ref heurValue);
+                //restore variables
+                passedBy[next]--;
+                currentPath.RemoveAt(currentPath.Count-1);
+                res.totalCost -= cost;
+                //readd the arc removed
+                graph.addArc(currentNode, next, cost);
+            }
+
         }
 
         //astar algorithm
@@ -57,9 +120,7 @@ namespace road_network
             
             //return value strucure:
             searchResult<TNode> sRes = new searchResult<TNode>();
-            sRes.visitedNodes = 0;
-            sRes.testedArcs = 0;
-            sRes.sPath = new List<TNode>();
+           
 
             //priority queue for opened nodes (sorted by priority)
             priorityQueue<TNode> openNodes = new priorityQueue<TNode>();
