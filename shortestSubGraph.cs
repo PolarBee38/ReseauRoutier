@@ -150,6 +150,8 @@ namespace road_network
         }
         public double getCost(T n1, T n2)
         {
+            if (n1.Equals(n2))
+                return 0;
             return shortestPath[n1][n2].totalCost;
         }
         public searchResult<T> getResult(T n1, T n2)

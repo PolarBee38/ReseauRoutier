@@ -48,15 +48,11 @@ namespace road_network
             passedBy[start] = 1;
             List<TNode> currentPath = new List<TNode>();
             currentPath.Add(start);
-            double heurValue = double.PositiveInfinity;
+            double minValue = double.PositiveInfinity;
 
             //Recursive call
-            recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref heurValue);
-
-            //add cost from last to start
-            sRes.totalCost = heurValue + sGraph.getCost(sRes.sPath.Last(), start);
-            //add start at the end
-            sRes.sPath.Add(start);
+            recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref minValue);
+            sRes.totalCost = minValue;
             //construct sub paths
             List<TNode> result = new List<TNode>();
             for(int i = 1; i<sRes.sPath.Count; ++i)
@@ -72,14 +68,20 @@ namespace road_network
             result.Add(start);
             return sRes;
         }
-        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref Dictionary<TNode,int> passedBy, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double heurValue) where TNode :GraphNode
+        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref Dictionary<TNode,int> passedBy, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue) where TNode :GraphNode
         {
             //if all node visited, return
             int newNodeVisited = passedBy.Count(x => x.Value > 0);
             if (newNodeVisited >= graph.nbNodes())
             {
+                //add cost from last to start
+                res.totalCost += graph.getCost(currentPath.Last(), currentPath.First());
+                //save current path
                 res.sPath = new List<TNode>(currentPath);
-                heurValue = res.totalCost;
+                //add start at the end
+                res.sPath.Add(res.sPath.First());
+                //update min cost
+                minValue = res.totalCost;
                 return;
             }
             res.visitedNodes++;
@@ -89,11 +91,14 @@ namespace road_network
             {
                 TNode next = arcs[i].getItem();
                 double cost = arcs[i].getValue();
+
                 //stop research if next iteration will be worst than the better result found
-                if (cost + res.totalCost >= heurValue)
+                if (res.totalCost + cost + graph.getCost(next, currentPath.First()) >= minValue)
                     continue;
+
                 res.testedArcs++;
 
+                double previousCost = res.totalCost;
                 //update variables
                 passedBy[next]++;
                 currentPath.Add(next);
@@ -101,11 +106,11 @@ namespace road_network
                 //remove the arc
                 graph.removeArcAt(currentNode, i);
                 //recursive call
-                recTourSearch(graph, next, ref passedBy, ref currentPath, ref res, ref heurValue);
+                recTourSearch(graph, next, ref passedBy, ref currentPath, ref res, ref minValue);
                 //restore variables
                 passedBy[next]--;
                 currentPath.RemoveAt(currentPath.Count-1);
-                res.totalCost -= cost;
+                res.totalCost = previousCost;
                 //readd the arc removed
                 graph.addArc(currentNode, next, cost);
             }
@@ -121,7 +126,6 @@ namespace road_network
             //return value strucure:
             searchResult<TNode> sRes = new searchResult<TNode>();
            
-
             //priority queue for opened nodes (sorted by priority)
             priorityQueue<TNode> openNodes = new priorityQueue<TNode>();
 
