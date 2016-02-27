@@ -46,7 +46,7 @@ namespace road_network
             passedBy[start] = 1;
             List<TNode> currentPath = new List<TNode>();
             currentPath.Add(start);
-            double minValue = GloutonHeuristique(sGraph, start); //double.PositiveInfinity;
+            double minValue = /*GloutonHeuristique(sGraph, start).totalCost;*/double.PositiveInfinity;
 
             //Recursive call
             recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref minValue);
@@ -203,54 +203,57 @@ namespace road_network
             return sRes;
         }
 
-        public static double GloutonHeuristique<TNode> (IGraph<TNode> graph, TNode StartingTown) where TNode : GraphNode
+        public static searchResult<TNode> GloutonHeuristique<TNode> (IGraph<TNode> graph, TNode StartingTown) where TNode : GraphNode
         {
-            double heuristic = 0;
+            searchResult<TNode> result = new searchResult<TNode>();
             List<TNode> listNode = new List<TNode>();
-            listNode.Add(StartingTown);
+            listNode.Add(StartingTown); result.sPath.Add(StartingTown);
 
             coupleItem<TNode,double> closestNode;
+            IEnumerable<coupleItem<TNode, double>> listNeighbor;
             TNode t;
-            int back = 0, lenght;
+            int back = 0;
 
             //tant que toutes les villes n'ont pas été visitées
             while(listNode.Count() != graph.nodes().Count())
             {
                 t = listNode.Last();
-                IEnumerable<coupleItem<TNode, double>> listNeighbor = graph.neighbor(StartingTown);
-                closestNode = new coupleItem<TNode, double>(t, double.PositiveInfinity);
+                result.visitedNodes ++;
+
+                listNeighbor = graph.neighbor(t);
+                closestNode = new coupleItem<TNode, double>(null, double.PositiveInfinity);
                 foreach (coupleItem<TNode, double> couple in listNeighbor) //Find the closest Node
-                { 
-                    TNode nodeName = couple.getItem();
-                    if (!listNode.Contains(nodeName) && couple.getValue() < closestNode.getValue()) //if the route did not already went throught this Node, we test if tis is the nearest Node
+                {
+                    //if the route did not already went throught this Node, we test if tis is the nearest Node
+                    if (!listNode.Contains(couple.getItem() as TNode) && couple.getValue() < closestNode.getValue()) 
                     {
                         closestNode = new coupleItem<TNode, double>(couple.getItem(), couple.getValue());
+                        result.testedArcs++;
                     }
                 }
 
                 //if the last tested node is a remote node, we turn back to a previous node. 
-                if (closestNode.getValue().Equals(double.PositiveInfinity))
+                if (closestNode.getValue().Equals(double.PositiveInfinity) || closestNode.getItem().Equals(null))
                 {
-                    lenght = listNode.Count();
-                    TNode tmp = listNode[lenght-back-2];
+                    TNode tmp = listNode[listNode.Count()-back-2];
                     listNode.Remove(tmp);
-                    listNode.Add(t);
-                    listNode.Add(tmp);
-                    heuristic += graph.getCost(listNode.Last(), listNode[lenght-2]);
+                    listNode.Add(tmp); result.sPath.Add(tmp);
+                    result.totalCost += graph.getCost(listNode.Last(), listNode[listNode.Count()-2]);
                     back++;
                 }
                 else //we found the nearest Node
                 {
-                    back = 0;
+                    //back = 0;
                     listNode.Add(closestNode.getItem());
-                    heuristic += closestNode.getValue();
+                    result.sPath.Add(closestNode.getItem());
+                    result.totalCost += closestNode.getValue();
                 }
             } //end while we visited every town
             //We count the cost to reach the first city :
-            searchResult<TNode> result = astar(graph, listNode.Last(), StartingTown, null, null);
-            heuristic += result.totalCost;
+            searchResult<TNode> tmpresult = astar(graph, result.sPath.Last(), StartingTown, null, null);
+            result.totalCost += tmpresult.totalCost;
             
-            return heuristic;
+            return result;
         }
     }
 }
