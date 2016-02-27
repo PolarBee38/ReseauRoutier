@@ -80,9 +80,6 @@ namespace road_network
                     //add arcs to graph
                     arcs[startNode].enqueue(destNode,res.totalCost);
                     arcs[destNode].enqueue(startNode, res.totalCost);
-
-                    
-
                 }
             }
 

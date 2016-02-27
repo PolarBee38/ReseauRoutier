@@ -131,9 +131,12 @@ namespace road_network
             lRes.Text += "\r\n" + searchRes.visitedNodes + " villes visitées."+ "\r\n routes testées: " + searchRes.testedArcs;
         }
 
+
         private void btnTour_Click(object sender, EventArgs e)
         {
             treeRes.Nodes.Clear();
+
+            //Get town's list
             List<Town> listTown = new List<Town>();
             foreach (object itemChecked in checkedListBoxFarm.CheckedItems)
                 listTown.Add((Town)itemChecked);
@@ -145,14 +148,12 @@ namespace road_network
             watch.Stop();
             lRes.Text += "Elapsed time :\t" + watch.ElapsedMilliseconds +"ms\r\n";
             lRes.Text += "Total cost:\t" + res.totalCost + "\r\nNode visited:\t" + res.visitedNodes + "\r\nArc tested:\t" + res.testedArcs + "\r\n";
-            //test pour afficher es voisins du nouveau graphe
+            //test pour afficher les voisins du nouveau graphe
             for(int i = 1; i<res.sPath.Count;i++)
             {
                 lRes.Text += res.sPath[i - 1].ToString() + "\t->\t" + res.sPath[i].ToString() + "\t(" + graph.getCost(res.sPath[i - 1], res.sPath[i]) + ")\r\n";
 
             }
-            
-
         }
     }
 }
