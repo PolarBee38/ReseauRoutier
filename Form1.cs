@@ -141,10 +141,9 @@ namespace road_network
             foreach (object itemChecked in checkedListBoxFarm.CheckedItems)
                 listTown.Add((Town)itemChecked);
            
-            //newGraph = graph.newSubMap(listTown, out listPath);
             lRes.Text = "";
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            searchResult<Town> res = graphSearch.tourSearch(graph, listTown);
+            searchResult<Town> res = graphSearch.tourSearch(graph, listTown, listTown[0]);
             watch.Stop();
             lRes.Text += "Elapsed time :\t" + watch.ElapsedMilliseconds +"ms\r\n";
             lRes.Text += "Total cost:\t" + res.totalCost + "\r\nNode visited:\t" + res.visitedNodes + "\r\nArc tested:\t" + res.testedArcs + "\r\n";

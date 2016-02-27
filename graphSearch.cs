@@ -33,22 +33,20 @@ namespace road_network
         }
 
         //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
-        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset) where TNode : GraphNode
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start) where TNode : GraphNode
         {
             shortestSubGraph<TNode> sGraph = new shortestSubGraph<TNode>(graph, subset);
-            TNode start = subset[0];
             //return value class:
             searchResult<TNode> sRes = new searchResult<TNode>();
-            
 
-            //variables for the recurisve search function
+            //variables for the recurise search function
             Dictionary<TNode, int> passedBy = new Dictionary<TNode, int>();
             foreach (TNode n in sGraph.nodes())
                 passedBy[n] = 0;
             passedBy[start] = 1;
             List<TNode> currentPath = new List<TNode>();
             currentPath.Add(start);
-            double minValue = double.PositiveInfinity;
+            double minValue = GloutonHeuristique(sGraph, start); //double.PositiveInfinity;
 
             //Recursive call
             recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref minValue);
@@ -216,7 +214,7 @@ namespace road_network
             int back = 0, lenght;
 
             //tant que toutes les villes n'ont pas été visitées
-            while(listNode.Count() != graph.nodes().Count()) 
+            while(listNode.Count() != graph.nodes().Count())
             {
                 t = listNode.Last();
                 IEnumerable<coupleItem<TNode, double>> listNeighbor = graph.neighbor(StartingTown);
