@@ -94,7 +94,7 @@ namespace road_network
                 return;
             }
             //in case of tour constraint :
-            if (nodeVisited > 1 && nodeVisited % currentTour == 0)
+            if (nodeVisited > 1 && (nodeVisited-1) % currentTour == 0)
             {
                 currentTour += tourLength;
                 if(!currentNode.Equals(currentPath.First()))
