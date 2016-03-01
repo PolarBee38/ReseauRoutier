@@ -105,10 +105,14 @@ namespace road_network
                 }
                 cbStart.Items.Add(town);
                 cbEnd.Items.Add(town);
+                cbRouteStart.Items.Add(town);
             }
             cbStart.SelectedIndex = 0;
             cbEnd.SelectedIndex = 0;
-
+            nUDtownPerTour.Minimum = 1;
+            nUDtownPerTour.Maximum = graph.nodes().Count;
+            nUDtownPerTour.Value = 4;
+            cbRouteStart.SelectedIndex = 0;
             
         }
 
@@ -140,19 +144,36 @@ namespace road_network
             List<Town> listTown = new List<Town>();
             foreach (object itemChecked in checkedListBoxFarm.CheckedItems)
                 listTown.Add((Town)itemChecked);
-           
+            Town start = (Town)cbRouteStart.SelectedItem;
             lRes.Text = "";
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            searchResult<Town> res = graphSearch.tourSearch(graph, listTown, listTown[0]);
+            searchResult<Town> res;
+            if(checkBox1.Checked)
+                res = graphSearch.tourSearch(graph, listTown, start, (int)nUDtownPerTour.Value);
+            else
+                res = graphSearch.tourSearch(graph, listTown, start);
+
             watch.Stop();
             lRes.Text += "Elapsed time :\t" + watch.ElapsedMilliseconds +"ms\r\n";
             lRes.Text += "Total cost:\t" + res.totalCost + "\r\nNode visited:\t" + res.visitedNodes + "\r\nArc tested:\t" + res.testedArcs + "\r\n";
             //test pour afficher les voisins du nouveau graphe
-            for(int i = 1; i<res.sPath.Count;i++)
+            lRes.Text += "\r\nGlobal path:\r\n"; 
+            for (int i = 0; i < res.sPath.Count; i++)
             {
-                lRes.Text += res.sPath[i - 1].ToString() + "\t->\t" + res.sPath[i].ToString() + "\t(" + graph.getCost(res.sPath[i - 1], res.sPath[i]) + ")\r\n";
+                lRes.Text += res.sPath[i].ToString() + " -> ";
+            }
+            lRes.Text += "\r\n\r\nDetailed path:\r\n";
+            for(int i = 1; i<res.sPathFull.Count;i++)
+            {
+                lRes.Text += res.sPathFull[i - 1].ToString() + "\t->\t" + res.sPathFull[i].ToString() + "\t(" + graph.getCost(res.sPathFull[i - 1], res.sPathFull[i]) + ")\r\n";
 
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            lMaxTownTour.Enabled = checkBox1.Checked;
+            nUDtownPerTour.Enabled = checkBox1.Checked;
         }
     }
 }

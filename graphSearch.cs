@@ -16,11 +16,13 @@ namespace road_network
             testedArcs = 0;
             totalCost = 0;
             sPath = new List<TNode>();
+            sPathFull = new List<TNode>();
         }
         public int visitedNodes;
         public int testedArcs;
         public double totalCost;
         public List<TNode> sPath;
+        public List<TNode> sPathFull;
     }
     
     public static class graphSearch
@@ -31,25 +33,30 @@ namespace road_network
         {
             return 0;
         }
-
-        //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
         public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start) where TNode : GraphNode
         {
+            return tourSearch(graph, subset, start, graph.nodes().Count);
+        }
+        //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start, int tourLength) where TNode : GraphNode
+        {
+            if (!subset.Contains(start))
+                subset.Add(start);
             shortestSubGraph<TNode> sGraph = new shortestSubGraph<TNode>(graph, subset);
             //return value class:
             searchResult<TNode> sRes = new searchResult<TNode>();
 
             //variables for the recurise search function
-            Dictionary<TNode, int> passedBy = new Dictionary<TNode, int>();
+            List<TNode> nodeToCheck = new List<TNode>();
             foreach (TNode n in sGraph.nodes())
-                passedBy[n] = 0;
-            passedBy[start] = 1;
+                nodeToCheck.Add(n);
+            nodeToCheck.Remove(start);
             List<TNode> currentPath = new List<TNode>();
             currentPath.Add(start);
             double minValue = /*GloutonHeuristique(sGraph, start).totalCost;*/double.PositiveInfinity;
 
             //Recursive call
-            recTourSearch(sGraph, start, ref passedBy, ref currentPath, ref sRes, ref minValue);
+            recTourSearch(sGraph, start, ref nodeToCheck, ref currentPath, ref sRes, ref minValue,tourLength,tourLength);
             sRes.totalCost = minValue;
             //construct sub paths
             List<TNode> result = new List<TNode>();
@@ -59,18 +66,22 @@ namespace road_network
                 subPath = subPath.GetRange(0, subPath.Count - 1);
                 result.AddRange(subPath);
             }
-            sRes.sPath = result;
+            sRes.sPathFull = result;
             //TODO:
             //maybe add cost of precomputation to node and arc visited ?
            
             result.Add(start);
             return sRes;
         }
-        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref Dictionary<TNode,int> passedBy, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue) where TNode :GraphNode
+        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref List<TNode> nodeToCheck, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue, int currentTour, int tourLength) where TNode :GraphNode
         {
+
+            double maxCost;
+            double currentCost;
+
             //if all node visited, return
-            int newNodeVisited = passedBy.Count(x => x.Value > 0);
-            if (newNodeVisited >= graph.nbNodes())
+            int nodeVisited = graph.nbNodes()-nodeToCheck.Count;
+            if (nodeVisited >= graph.nbNodes())
             {
                 //add cost from last to start
                 res.totalCost += graph.getCost(currentPath.Last(), currentPath.First());
@@ -82,35 +93,62 @@ namespace road_network
                 minValue = res.totalCost;
                 return;
             }
-            res.visitedNodes++;
-            //iterate over neighbor of curent node
-            List<coupleItem<TNode, double>> arcs = graph.neighbor(currentNode).ToList();
-            for( int i = 0; i<graph.neighbor(currentNode).Count();++i)
+            //in case of tour constraint :
+            if (nodeVisited > 1 && nodeVisited % currentTour == 0)
             {
-                TNode next = arcs[i].getItem();
-                double cost = arcs[i].getValue();
+                currentTour += tourLength;
+                if(!currentNode.Equals(currentPath.First()))
+                {
+                    currentPath.Add(currentPath.First());
+                    res.totalCost += graph.getCost(currentNode, currentPath.First());
+                }
+                maxCost = 0;
+                //stop research if next iteration will be worst than the best result
+                //test cost to furthest node + back to start.
+                //stop if cost >= best result found
+                foreach (TNode next in nodeToCheck)
+                {
+                    currentCost = 2*graph.getCost(next, currentPath.First());
+                    maxCost = Math.Max(currentCost, maxCost);
+                }
+                if (maxCost + res.totalCost >= minValue)
+                    return;
+                currentNode = currentPath.First();
+            }
+            maxCost = 0;
+            //stop research if next iteration will be worst than the best result
+            //test cost to furthest node + back to start.
+            //stop if cost >= best result found
+            foreach (TNode next in nodeToCheck)
+            {
+                currentCost = graph.getCost(currentNode, next) + graph.getCost(next, currentPath.First());
+                maxCost = Math.Max(currentCost, maxCost);
+            }
+            if (maxCost + res.totalCost >= minValue)
+                return;
 
-                //stop research if next iteration will be worst than the better result found
-                if (res.totalCost + cost + graph.getCost(next, currentPath.First()) >= minValue)
-                    continue;
-
+            //check from current node
+            res.visitedNodes++;
+            for(int i = 0;i<nodeToCheck.Count;++i)
+           // foreach(TNode next in nodeToCheck)
+            {
+                TNode next = nodeToCheck[i];
                 res.testedArcs++;
+                double cost = graph.getCost(currentNode, next);
 
-                double previousCost = res.totalCost;
                 //update variables
-                passedBy[next]++;
+                double previousCost = res.totalCost;
+                int previousCount = currentPath.Count;
+                nodeToCheck.RemoveAt(i);
                 currentPath.Add(next);
                 res.totalCost += cost;
-                //remove the arc
-                graph.removeArcAt(currentNode, i);
                 //recursive call
-                recTourSearch(graph, next, ref passedBy, ref currentPath, ref res, ref minValue);
+                recTourSearch(graph, next, ref nodeToCheck, ref currentPath, ref res, ref minValue,currentTour,tourLength);
                 //restore variables
-                passedBy[next]--;
-                currentPath.RemoveAt(currentPath.Count-1);
+                nodeToCheck.Insert(i, next);
+                currentPath.RemoveRange(previousCount, currentPath.Count - previousCount);
                 res.totalCost = previousCost;
-                //readd the arc removed
-                graph.addArc(currentNode, next, cost);
+                
             }
 
         }

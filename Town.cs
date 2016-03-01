@@ -23,6 +23,8 @@ namespace road_network
         }
         public override string ToString()
         {
+            if(farm)
+                return "[ "+Name+" ]";
             return Name;
         }
     }
