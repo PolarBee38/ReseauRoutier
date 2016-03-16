@@ -11,6 +11,7 @@ namespace road_network
     public abstract class GraphNode
     {
         protected string pname;
+        public int Color { get; set; }
         public string Name
         {
             get

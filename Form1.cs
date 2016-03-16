@@ -175,5 +175,21 @@ namespace road_network
             lMaxTownTour.Enabled = checkBox1.Checked;
             nUDtownPerTour.Enabled = checkBox1.Checked;
         }
+
+        private void btnColor_Click(object sender, EventArgs e)
+        {
+            List<int> nbColors = new List<int>();
+            nbColors.Add(8);//8 for the 1st color
+            nbColors.Add(8);//8 for the second
+            nbColors.Add(7);//7 for the third
+            if (!graphSearch.coloration(graph, nbColors))
+                lRes.Text = "not solution found";
+            else
+            {
+                lRes.Text = "Colors\r\n";
+                foreach (Town t in graph.nodes())
+                    lRes.Text += t + " sc:" +(t.Color+1)+"\r\n"; 
+            }
+        }
     }
 }

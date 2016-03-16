@@ -24,7 +24,7 @@ namespace road_network
         public List<TNode> sPath;
         public List<TNode> sPathFull;
     }
-    
+
     public static class graphSearch
     {
 
@@ -33,6 +33,57 @@ namespace road_network
         {
             return 0;
         }
+
+
+        private static bool checkColor<TNode>(IGraph<TNode> graph, TNode current, int color) where TNode : GraphNode
+        {
+            foreach (coupleItem<TNode, double> arcs in graph.neighbor(current))
+                if (color == arcs.getItem().Color)
+                    return false;
+            return true;
+        }
+
+
+        public static bool coloration<TNode>(IGraph<TNode> graph, List<int> nbColors) where TNode : GraphNode
+        {
+            List<TNode> notColoredNodes = new List<TNode>();
+            foreach (TNode node in graph.nodes())
+            {
+                node.Color = -1;
+                int i = 0;
+                //insert node in order
+                //maximum degree first
+                while(i<notColoredNodes.Count && graph.nbNeighbor(notColoredNodes[i])>graph.nbNeighbor(node))
+                    ++i;
+                notColoredNodes.Insert(i,node);
+            }
+            return recColoration(graph, ref nbColors, ref notColoredNodes);
+        }
+
+        public static bool recColoration<TNode>(IGraph<TNode> graph, ref List<int> nbColors, ref List<TNode> notColoredNode) where TNode : GraphNode
+        {
+            if (notColoredNode.Count == 0)
+                return true;
+            for (int n = 0; n < notColoredNode.Count; ++n)
+            {
+                TNode current = notColoredNode[n];
+                notColoredNode.RemoveAt(n);
+                for (int c = 0; c < nbColors.Count; ++c)
+                    if (checkColor(graph, current, c) && nbColors[c] > 0)
+                    {
+                        nbColors[c]--;
+                        current.Color = c;
+                        if (recColoration(graph, ref nbColors, ref notColoredNode))
+                            return true;
+                        current.Color = -1;
+                        nbColors[c]++;
+                    }
+                notColoredNode.Insert(n, current);
+            }
+            return false;
+        }
+
+
         public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start) where TNode : GraphNode
         {
             return tourSearch(graph, subset, start, graph.nodes().Count);
@@ -56,11 +107,11 @@ namespace road_network
             double minValue = /*GloutonHeuristique(sGraph, start).totalCost;*/double.PositiveInfinity;
 
             //Recursive call
-            recTourSearch(sGraph, start, ref nodeToCheck, ref currentPath, ref sRes, ref minValue,tourLength,tourLength);
+            recTourSearch(sGraph, start, ref nodeToCheck, ref currentPath, ref sRes, ref minValue, tourLength, tourLength);
             sRes.totalCost = minValue;
             //construct sub paths
             List<TNode> result = new List<TNode>();
-            for(int i = 1; i<sRes.sPath.Count; ++i)
+            for (int i = 1; i < sRes.sPath.Count; ++i)
             {
                 List<TNode> subPath = sGraph.sPath(sRes.sPath[i - 1], sRes.sPath[i]);
                 subPath = subPath.GetRange(0, subPath.Count - 1);
@@ -69,18 +120,18 @@ namespace road_network
             sRes.sPathFull = result;
             //TODO:
             //maybe add cost of precomputation to node and arc visited ?
-           
+
             result.Add(start);
             return sRes;
         }
-        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref List<TNode> nodeToCheck, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue, int currentTour, int tourLength) where TNode :GraphNode
+        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref List<TNode> nodeToCheck, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue, int currentTour, int tourLength) where TNode : GraphNode
         {
 
             double maxCost;
             double currentCost;
 
             //if all node visited, return
-            int nodeVisited = graph.nbNodes()-nodeToCheck.Count;
+            int nodeVisited = graph.nbNodes() - nodeToCheck.Count;
             if (nodeVisited >= graph.nbNodes())
             {
                 //add cost from last to start
@@ -94,10 +145,10 @@ namespace road_network
                 return;
             }
             //in case of tour constraint :
-            if (nodeVisited > 1 && (nodeVisited-1) % currentTour == 0)
+            if (nodeVisited > 1 && (nodeVisited - 1) % currentTour == 0)
             {
                 currentTour += tourLength;
-                if(!currentNode.Equals(currentPath.First()))
+                if (!currentNode.Equals(currentPath.First()))
                 {
                     currentPath.Add(currentPath.First());
                     res.totalCost += graph.getCost(currentNode, currentPath.First());
@@ -108,7 +159,7 @@ namespace road_network
                 //stop if cost >= best result found
                 foreach (TNode next in nodeToCheck)
                 {
-                    currentCost = 2*graph.getCost(next, currentPath.First());
+                    currentCost = 2 * graph.getCost(next, currentPath.First());
                     maxCost = Math.Max(currentCost, maxCost);
                 }
                 if (maxCost + res.totalCost >= minValue)
@@ -129,8 +180,7 @@ namespace road_network
 
             //check from current node
             res.visitedNodes++;
-            for(int i = 0;i<nodeToCheck.Count;++i)
-           // foreach(TNode next in nodeToCheck)
+            for (int i = 0; i < nodeToCheck.Count; ++i)
             {
                 TNode next = nodeToCheck[i];
                 res.testedArcs++;
@@ -143,25 +193,25 @@ namespace road_network
                 currentPath.Add(next);
                 res.totalCost += cost;
                 //recursive call
-                recTourSearch(graph, next, ref nodeToCheck, ref currentPath, ref res, ref minValue,currentTour,tourLength);
+                recTourSearch(graph, next, ref nodeToCheck, ref currentPath, ref res, ref minValue, currentTour, tourLength);
                 //restore variables
                 nodeToCheck.Insert(i, next);
                 currentPath.RemoveRange(previousCount, currentPath.Count - previousCount);
                 res.totalCost = previousCost;
-                
+
             }
 
         }
 
         //astar algorithm
-        public static searchResult<TNode> astar<TNode>  (IGraph<TNode> graph, TNode from, TNode to, heuristicMethod<TNode> heuristic = null, TreeView path = null) where TNode :GraphNode
+        public static searchResult<TNode> astar<TNode>(IGraph<TNode> graph, TNode from, TNode to, heuristicMethod<TNode> heuristic = null, TreeView path = null) where TNode : GraphNode
         {
             if (heuristic == null)
                 heuristic = graphSearch.zero;
-            
+
             //return value strucure:
             searchResult<TNode> sRes = new searchResult<TNode>();
-           
+
             //priority queue for opened nodes (sorted by priority)
             priorityQueue<TNode> openNodes = new priorityQueue<TNode>();
 
@@ -181,7 +231,7 @@ namespace road_network
             {
                 path.Nodes.Clear();
                 TreeNode tn = new TreeNode(from.ToString());
-                solutionQueue.enqueue(tn,0);
+                solutionQueue.enqueue(tn, 0);
                 path.Nodes.Add(tn);
             }
             //*/
@@ -191,7 +241,7 @@ namespace road_network
                 TNode current = openNodes.dequeue();
 
                 //*
-                if(path!=null)
+                if (path != null)
                     curNode = solutionQueue.dequeue();
                 //*/
                 // increment opened nodes counter
@@ -200,7 +250,7 @@ namespace road_network
                 if (current.Equals(to))
                     break;
                 //check nieghbor of current
-                foreach ( coupleItem<TNode, double> arc in graph.neighbor(current))
+                foreach (coupleItem<TNode, double> arc in graph.neighbor(current))
                 {
                     TNode next = arc.getItem();
                     double costToNext = arc.getValue();
@@ -211,7 +261,7 @@ namespace road_network
                     {
                         //store cost and parent
                         sRes.testedArcs++;
-                        fromNode[next] = new coupleItem<TNode,double>(current, totalCost);
+                        fromNode[next] = new coupleItem<TNode, double>(current, totalCost);
                         //add node to openNodes
                         openNodes.enqueue(next, totalCost + heuristic(next, to));
 
@@ -241,29 +291,29 @@ namespace road_network
             return sRes;
         }
 
-        public static searchResult<TNode> GloutonHeuristique<TNode> (IGraph<TNode> graph, TNode StartingTown) where TNode : GraphNode
+        public static searchResult<TNode> GloutonHeuristique<TNode>(IGraph<TNode> graph, TNode StartingTown) where TNode : GraphNode
         {
             searchResult<TNode> result = new searchResult<TNode>();
             List<TNode> listNode = new List<TNode>();
             listNode.Add(StartingTown); result.sPath.Add(StartingTown);
 
-            coupleItem<TNode,double> closestNode;
+            coupleItem<TNode, double> closestNode;
             IEnumerable<coupleItem<TNode, double>> listNeighbor;
             TNode t;
             int back = 0;
 
             //tant que toutes les villes n'ont pas été visitées
-            while(listNode.Count() != graph.nodes().Count())
+            while (listNode.Count() != graph.nodes().Count())
             {
                 t = listNode.Last();
-                result.visitedNodes ++;
+                result.visitedNodes++;
 
                 listNeighbor = graph.neighbor(t);
                 closestNode = new coupleItem<TNode, double>(null, double.PositiveInfinity);
                 foreach (coupleItem<TNode, double> couple in listNeighbor) //Find the closest Node
                 {
                     //if the route did not already went throught this Node, we test if tis is the nearest Node
-                    if (!listNode.Contains(couple.getItem() as TNode) && couple.getValue() < closestNode.getValue()) 
+                    if (!listNode.Contains(couple.getItem() as TNode) && couple.getValue() < closestNode.getValue())
                     {
                         closestNode = new coupleItem<TNode, double>(couple.getItem(), couple.getValue());
                         result.testedArcs++;
@@ -273,10 +323,10 @@ namespace road_network
                 //if the last tested node is a remote node, we turn back to a previous node. 
                 if (closestNode.getValue().Equals(double.PositiveInfinity) || closestNode.getItem().Equals(null))
                 {
-                    TNode tmp = listNode[listNode.Count()-back-2];
+                    TNode tmp = listNode[listNode.Count() - back - 2];
                     listNode.Remove(tmp);
                     listNode.Add(tmp); result.sPath.Add(tmp);
-                    result.totalCost += graph.getCost(listNode.Last(), listNode[listNode.Count()-2]);
+                    result.totalCost += graph.getCost(listNode.Last(), listNode[listNode.Count() - 2]);
                     back++;
                 }
                 else //we found the nearest Node
@@ -290,7 +340,7 @@ namespace road_network
             //We count the cost to reach the first city :
             searchResult<TNode> tmpresult = astar(graph, result.sPath.Last(), StartingTown, null, null);
             result.totalCost += tmpresult.totalCost;
-            
+
             return result;
         }
     }

@@ -36,18 +36,19 @@
             this.btnTour = new System.Windows.Forms.Button();
             this.lRes = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbRouteStart = new System.Windows.Forms.ComboBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.nUDtownPerTour = new System.Windows.Forms.NumericUpDown();
             this.lMaxTownTour = new System.Windows.Forms.Label();
+            this.nUDtownPerTour = new System.Windows.Forms.NumericUpDown();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cbRouteStart = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnColor = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUDtownPerTour)).BeginInit();
@@ -133,6 +134,33 @@
             this.panel1.Size = new System.Drawing.Size(256, 377);
             this.panel1.TabIndex = 8;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 213);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(68, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Search tree :";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(92, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Destination town :";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 36);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(75, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Starting town :";
+            // 
             // label1
             // 
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -144,33 +172,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "A star algorithm";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 36);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Starting town :";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 92);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(92, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Destination town :";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 213);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(68, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Search tree :";
             // 
             // panel2
             // 
@@ -184,10 +185,65 @@
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.checkedListBoxFarm);
             this.panel2.Controls.Add(this.btnTour);
-            this.panel2.Location = new System.Drawing.Point(409, 23);
+            this.panel2.Location = new System.Drawing.Point(301, 23);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(426, 377);
             this.panel2.TabIndex = 9;
+            // 
+            // lMaxTownTour
+            // 
+            this.lMaxTownTour.AutoSize = true;
+            this.lMaxTownTour.Enabled = false;
+            this.lMaxTownTour.Location = new System.Drawing.Point(241, 105);
+            this.lMaxTownTour.Name = "lMaxTownTour";
+            this.lMaxTownTour.Size = new System.Drawing.Size(82, 13);
+            this.lMaxTownTour.TabIndex = 10;
+            this.lMaxTownTour.Text = "Max town/tour :";
+            // 
+            // nUDtownPerTour
+            // 
+            this.nUDtownPerTour.Enabled = false;
+            this.nUDtownPerTour.Location = new System.Drawing.Point(344, 103);
+            this.nUDtownPerTour.Name = "nUDtownPerTour";
+            this.nUDtownPerTour.Size = new System.Drawing.Size(75, 20);
+            this.nUDtownPerTour.TabIndex = 9;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(225, 80);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(162, 17);
+            this.checkBox1.TabIndex = 8;
+            this.checkBox1.Text = "Limit number of town per tour";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // cbRouteStart
+            // 
+            this.cbRouteStart.FormattingEnabled = true;
+            this.cbRouteStart.Location = new System.Drawing.Point(222, 52);
+            this.cbRouteStart.Name = "cbRouteStart";
+            this.cbRouteStart.Size = new System.Drawing.Size(197, 21);
+            this.cbRouteStart.TabIndex = 5;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(222, 36);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(75, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Starting town :";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 36);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(78, 13);
+            this.label6.TabIndex = 5;
+            this.label6.Text = "Towns to visit :";
             // 
             // label5
             // 
@@ -201,66 +257,22 @@
             this.label5.Text = "Route search";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label6
+            // btnColor
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 36);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(78, 13);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Towns to visit :";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(222, 36);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Starting town :";
-            // 
-            // cbRouteStart
-            // 
-            this.cbRouteStart.FormattingEnabled = true;
-            this.cbRouteStart.Location = new System.Drawing.Point(222, 52);
-            this.cbRouteStart.Name = "cbRouteStart";
-            this.cbRouteStart.Size = new System.Drawing.Size(197, 21);
-            this.cbRouteStart.TabIndex = 5;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(225, 80);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(162, 17);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "Limit number of town per tour";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // nUDtownPerTour
-            // 
-            this.nUDtownPerTour.Enabled = false;
-            this.nUDtownPerTour.Location = new System.Drawing.Point(344, 103);
-            this.nUDtownPerTour.Name = "nUDtownPerTour";
-            this.nUDtownPerTour.Size = new System.Drawing.Size(75, 20);
-            this.nUDtownPerTour.TabIndex = 9;
-            // 
-            // lMaxTownTour
-            // 
-            this.lMaxTownTour.AutoSize = true;
-            this.lMaxTownTour.Enabled = false;
-            this.lMaxTownTour.Location = new System.Drawing.Point(241, 105);
-            this.lMaxTownTour.Name = "lMaxTownTour";
-            this.lMaxTownTour.Size = new System.Drawing.Size(82, 13);
-            this.lMaxTownTour.TabIndex = 10;
-            this.lMaxTownTour.Text = "Max town/tour :";
+            this.btnColor.Location = new System.Drawing.Point(757, 174);
+            this.btnColor.Name = "btnColor";
+            this.btnColor.Size = new System.Drawing.Size(75, 221);
+            this.btnColor.TabIndex = 10;
+            this.btnColor.Text = "Coloration";
+            this.btnColor.UseVisualStyleBackColor = true;
+            this.btnColor.Click += new System.EventHandler(this.btnColor_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(856, 662);
+            this.Controls.Add(this.btnColor);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.lRes);
@@ -298,6 +310,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ComboBox cbRouteStart;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnColor;
     }
 }
 
