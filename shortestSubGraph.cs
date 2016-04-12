@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace road_network
 {
+    //creation of the connected subgraph
     public class shortestSubGraph<T> : IGraph<T> where T :GraphNode
     {
         private IGraph<T> graph;

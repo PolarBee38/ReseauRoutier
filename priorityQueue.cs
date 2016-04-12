@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace road_network
 {
     
-    
+    //simple implementation of priority queue
     public class priorityQueue<T>
     {
         private class priorityComp<T> : IComparer<coupleItem<T, double>>

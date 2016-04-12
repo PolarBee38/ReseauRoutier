@@ -28,179 +28,12 @@ namespace road_network
     public static class graphSearch
     {
 
+        #region ASTAR_REGION
+
         //default heuristic <=> Dijkstrat
         private static double zero<TNode>(TNode n1, TNode n2)
         {
             return 0;
-        }
-
-
-        private static bool checkColor<TNode>(IGraph<TNode> graph, TNode current, int color) where TNode : GraphNode
-        {
-            foreach (coupleItem<TNode, double> arcs in graph.neighbor(current))
-                if (color == arcs.getItem().Color)
-                    return false;
-            return true;
-        }
-
-
-        public static bool coloration<TNode>(IGraph<TNode> graph, List<int> nbColors) where TNode : GraphNode
-        {
-            List<TNode> notColoredNodes = new List<TNode>();
-            foreach (TNode node in graph.nodes())
-            {
-                node.Color = -1;
-                int i = 0;
-                //insert node in order
-                //maximum degree first
-                while(i<notColoredNodes.Count && graph.nbNeighbor(notColoredNodes[i])>graph.nbNeighbor(node))
-                    ++i;
-                notColoredNodes.Insert(i,node);
-            }
-            return recColoration(graph, ref nbColors, ref notColoredNodes);
-        }
-
-        public static bool recColoration<TNode>(IGraph<TNode> graph, ref List<int> nbColors, ref List<TNode> notColoredNode) where TNode : GraphNode
-        {
-            if (notColoredNode.Count == 0)
-                return true;
-            for (int n = 0; n < notColoredNode.Count; ++n)
-            {
-                TNode current = notColoredNode[n];
-                notColoredNode.RemoveAt(n);
-                for (int c = 0; c < nbColors.Count; ++c)
-                    if (checkColor(graph, current, c) && nbColors[c] > 0)
-                    {
-                        nbColors[c]--;
-                        current.Color = c;
-                        if (recColoration(graph, ref nbColors, ref notColoredNode))
-                            return true;
-                        current.Color = -1;
-                        nbColors[c]++;
-                    }
-                notColoredNode.Insert(n, current);
-            }
-            return false;
-        }
-
-
-        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start) where TNode : GraphNode
-        {
-            return tourSearch(graph, subset, start, graph.nodes().Count);
-        }
-        //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
-        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start, int tourLength) where TNode : GraphNode
-        {
-            if (!subset.Contains(start))
-                subset.Add(start);
-            shortestSubGraph<TNode> sGraph = new shortestSubGraph<TNode>(graph, subset);
-            //return value class:
-            searchResult<TNode> sRes = new searchResult<TNode>();
-
-            //variables for the recurise search function
-            List<TNode> nodeToCheck = new List<TNode>();
-            foreach (TNode n in sGraph.nodes())
-                nodeToCheck.Add(n);
-            nodeToCheck.Remove(start);
-            List<TNode> currentPath = new List<TNode>();
-            currentPath.Add(start);
-            double minValue = /*GloutonHeuristique(sGraph, start).totalCost;*/double.PositiveInfinity;
-
-            //Recursive call
-            recTourSearch(sGraph, start, ref nodeToCheck, ref currentPath, ref sRes, ref minValue, tourLength, tourLength);
-            sRes.totalCost = minValue;
-            //construct sub paths
-            List<TNode> result = new List<TNode>();
-            for (int i = 1; i < sRes.sPath.Count; ++i)
-            {
-                List<TNode> subPath = sGraph.sPath(sRes.sPath[i - 1], sRes.sPath[i]);
-                subPath = subPath.GetRange(0, subPath.Count - 1);
-                result.AddRange(subPath);
-            }
-            sRes.sPathFull = result;
-            //TODO:
-            //maybe add cost of precomputation to node and arc visited ?
-
-            result.Add(start);
-            return sRes;
-        }
-        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref List<TNode> nodeToCheck, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue, int currentTour, int tourLength) where TNode : GraphNode
-        {
-
-            double maxCost;
-            double currentCost;
-
-            //if all node visited, return
-            int nodeVisited = graph.nbNodes() - nodeToCheck.Count;
-            if (nodeVisited >= graph.nbNodes())
-            {
-                //add cost from last to start
-                res.totalCost += graph.getCost(currentPath.Last(), currentPath.First());
-                //save current path
-                res.sPath = new List<TNode>(currentPath);
-                //add start at the end
-                res.sPath.Add(res.sPath.First());
-                //update min cost
-                minValue = res.totalCost;
-                return;
-            }
-            //in case of tour constraint :
-            if (nodeVisited > 1 && (nodeVisited - 1) % currentTour == 0)
-            {
-                currentTour += tourLength;
-                if (!currentNode.Equals(currentPath.First()))
-                {
-                    currentPath.Add(currentPath.First());
-                    res.totalCost += graph.getCost(currentNode, currentPath.First());
-                }
-                maxCost = 0;
-                //stop research if next iteration will be worst than the best result
-                //test cost to furthest node + back to start.
-                //stop if cost >= best result found
-                foreach (TNode next in nodeToCheck)
-                {
-                    currentCost = 2 * graph.getCost(next, currentPath.First());
-                    maxCost = Math.Max(currentCost, maxCost);
-                }
-                if (maxCost + res.totalCost >= minValue)
-                    return;
-                currentNode = currentPath.First();
-            }
-            maxCost = 0;
-            //stop research if next iteration will be worst than the best result
-            //test cost to furthest node + back to start.
-            //stop if cost >= best result found
-            foreach (TNode next in nodeToCheck)
-            {
-                currentCost = graph.getCost(currentNode, next) + graph.getCost(next, currentPath.First());
-                maxCost = Math.Max(currentCost, maxCost);
-            }
-            if (maxCost + res.totalCost >= minValue)
-                return;
-
-            //check from current node
-            res.visitedNodes++;
-            for (int i = 0; i < nodeToCheck.Count; ++i)
-            {
-                TNode next = nodeToCheck[i];
-                res.testedArcs++;
-                double cost = graph.getCost(currentNode, next);
-
-                //update variables
-                double previousCost = res.totalCost;
-                int previousCount = currentPath.Count;
-                nodeToCheck.RemoveAt(i);
-                currentPath.Add(next);
-                res.totalCost += cost;
-                //recursive call
-                recTourSearch(graph, next, ref nodeToCheck, ref currentPath, ref res, ref minValue, currentTour, tourLength);
-                //restore variables
-                nodeToCheck.Insert(i, next);
-                currentPath.RemoveRange(previousCount, currentPath.Count - previousCount);
-                res.totalCost = previousCost;
-
-            }
-
         }
 
         //astar algorithm
@@ -291,6 +124,142 @@ namespace road_network
             return sRes;
         }
 
+        #endregion
+
+        #region TOUR_SEARCH
+
+        //tour search without constraint <=> tour search with constraint: tour length >= number of nodes in the graph 
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start) where TNode : GraphNode
+        {
+            return tourSearch(graph, subset, start, graph.nodes().Count);
+        }
+
+        //tour search with constraint
+        //depthfirst search : we will have a very wide tree, better go deep to find a first solution then try to improve the result
+        public static searchResult<TNode> tourSearch<TNode>(IGraph<TNode> graph, List<TNode> subset, TNode start, int tourLength) where TNode : GraphNode
+        {
+            if (!subset.Contains(start))
+                subset.Add(start);
+            //creation of the connected subgraph
+            shortestSubGraph<TNode> sGraph = new shortestSubGraph<TNode>(graph, subset);
+            //return value class:
+            searchResult<TNode> sRes = new searchResult<TNode>();
+
+            //variables for the recurise search function
+            List<TNode> nodeToCheck = new List<TNode>();
+            foreach (TNode n in sGraph.nodes())
+                nodeToCheck.Add(n);
+            nodeToCheck.Remove(start);
+            List<TNode> currentPath = new List<TNode>();
+            currentPath.Add(start);
+            //glouton heuristic for initialistayion is not improving significatively the results
+            //double minValue = GloutonHeuristique(sGraph, start).totalCost;
+            double minValue = double.PositiveInfinity;
+
+            //Recursive call
+            recTourSearch(sGraph, start, ref nodeToCheck, ref currentPath, ref sRes, ref minValue, tourLength, tourLength);
+            sRes.totalCost = minValue;
+            //construct sub paths
+            List<TNode> result = new List<TNode>();
+            for (int i = 1; i < sRes.sPath.Count; ++i)
+            {
+                List<TNode> subPath = sGraph.sPath(sRes.sPath[i - 1], sRes.sPath[i]);
+                subPath = subPath.GetRange(0, subPath.Count - 1);
+                result.AddRange(subPath);
+            }
+            sRes.sPathFull = result;
+            //TODO:
+            //maybe add cost of precomputation to node and arc visited ?
+
+            result.Add(start);
+            return sRes;
+        }
+
+
+        //recursive search
+        public static void recTourSearch<TNode>(shortestSubGraph<TNode> graph, TNode currentNode, ref List<TNode> nodeToCheck, ref List<TNode> currentPath, ref searchResult<TNode> res, ref double minValue, int currentTour, int tourLength) where TNode : GraphNode
+        {
+
+            double maxCost;
+            double currentCost;
+
+            //if all node visited, return
+            int nodeVisited = graph.nbNodes() - nodeToCheck.Count;
+            if (nodeVisited >= graph.nbNodes())
+            {
+                //add cost from last to start
+                res.totalCost += graph.getCost(currentPath.Last(), currentPath.First());
+                //save current path
+                res.sPath = new List<TNode>(currentPath);
+                //add start at the end
+                res.sPath.Add(res.sPath.First());
+                //update min cost
+                minValue = res.totalCost;
+                return;
+            }
+            //in case of tour constraint :
+            if (nodeVisited > 1 && (nodeVisited - 1) % currentTour == 0)
+            {
+                //update next to constraint
+                currentTour += tourLength;
+                //if not at start, next town must be the strarting town
+                if (!currentNode.Equals(currentPath.First()))
+                {
+                    currentPath.Add(currentPath.First());
+                    res.totalCost += graph.getCost(currentNode, currentPath.First());
+                }
+                maxCost = 0;
+                //stop research if next iteration will be worst than the best result :
+                //test cost to furthest node + back to start.
+                //stop if cost >= best result found
+                foreach (TNode next in nodeToCheck)
+                {
+                    currentCost = 2 * graph.getCost(next, currentPath.First());
+                    maxCost = Math.Max(currentCost, maxCost);
+                }
+                if (maxCost + res.totalCost >= minValue)
+                    return;
+                //here, currentNode is the starting node because of the constraint
+                currentNode = currentPath.First();
+            }
+            maxCost = 0;
+            //stop research if next iteration will be worst than the best result:
+            //test cost to furthest node + back to start.
+            //stop if cost >= best result found
+            foreach (TNode next in nodeToCheck)
+            {
+                currentCost = graph.getCost(currentNode, next) + graph.getCost(next, currentPath.First());
+                maxCost = Math.Max(currentCost, maxCost);
+            }
+            if (maxCost + res.totalCost >= minValue)
+                return;
+
+            //Check solutions from current node
+            res.visitedNodes++;
+            for (int i = 0; i < nodeToCheck.Count; ++i)
+            {
+                TNode next = nodeToCheck[i];
+                res.testedArcs++;
+                double cost = graph.getCost(currentNode, next);
+
+                //store variables
+                double previousCost = res.totalCost;
+                int previousCount = currentPath.Count;
+                nodeToCheck.RemoveAt(i);
+                currentPath.Add(next);
+                res.totalCost += cost;
+                //recursive call
+                recTourSearch(graph, next, ref nodeToCheck, ref currentPath, ref res, ref minValue, currentTour, tourLength);
+                //restore variables
+                nodeToCheck.Insert(i, next);
+                currentPath.RemoveRange(previousCount, currentPath.Count - previousCount);
+                res.totalCost = previousCost;
+
+            }
+
+        }
+
+        //glouton heuristic to initialize the depthfirst search
         public static searchResult<TNode> GloutonHeuristique<TNode>(IGraph<TNode> graph, TNode StartingTown) where TNode : GraphNode
         {
             searchResult<TNode> result = new searchResult<TNode>();
@@ -343,5 +312,69 @@ namespace road_network
 
             return result;
         }
+        #endregion
+
+        #region COLORATION
+
+        //check if 'color' is not present in 'current' neighboor
+        private static bool checkColor<TNode>(IGraph<TNode> graph, TNode current, int color) where TNode : GraphNode
+        {
+            foreach (coupleItem<TNode, double> arcs in graph.neighbor(current))
+                if (color == arcs.getItem().Color)
+                    return false;
+            return true;
+        }
+
+        //coloration algo
+        //'nbColors' => colors available
+        //ex: nbColors = {6,5,4}
+        //=> 3 colors                       (nbColors.Count = 3)
+        //=> 6 coloration max for color1    (nbColors[0] = 6)
+        //=> 5 coloration max for color2    (nbColors[1] = 5)
+        //=> 4 coloration max for color3    (nbColors[2] = 4)
+        public static bool coloration<TNode>(IGraph<TNode> graph, List<int> nbColors) where TNode : GraphNode
+        {
+            List<TNode> notColoredNodes = new List<TNode>();
+            foreach (TNode node in graph.nodes())
+            {
+                node.Color = -1;
+                int i = 0;
+                //insert node in order
+                //maximum degree first
+                while(i<notColoredNodes.Count && graph.nbNeighbor(notColoredNodes[i])>graph.nbNeighbor(node))
+                    ++i;
+                notColoredNodes.Insert(i,node);
+            }
+            //call recursive search
+            return recColoration(graph, ref nbColors, ref notColoredNodes);
+        }
+
+        //recursive search
+        public static bool recColoration<TNode>(IGraph<TNode> graph, ref List<int> nbColors, ref List<TNode> notColoredNode) where TNode : GraphNode
+        {
+            if (notColoredNode.Count == 0)
+                return true;
+            for (int n = 0; n < notColoredNode.Count; ++n)
+            {
+                TNode current = notColoredNode[n];
+                notColoredNode.RemoveAt(n);
+                for (int c = 0; c < nbColors.Count; ++c)
+                    if (checkColor(graph, current, c) && nbColors[c] > 0)
+                    {
+                        //remove one from color c
+                        nbColors[c]--;
+                        current.Color = c;
+                        if (recColoration(graph, ref nbColors, ref notColoredNode))
+                            return true;
+                        current.Color = -1;
+                        //restore number
+                        nbColors[c]++;
+                    }
+                notColoredNode.Insert(n, current);
+            }
+            return false;
+        }
+
+        #endregion
     }
 }
