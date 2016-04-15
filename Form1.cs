@@ -106,6 +106,8 @@ namespace road_network
                 cbStart.Items.Add(town);
                 cbEnd.Items.Add(town);
                 cbRouteStart.Items.Add(town);
+                int nbNei = graph.nbNeighbor(town);
+                lRes.Text += town + "\t Degree:\t" + nbNei + (nbNei==1?"\timpasse":"")+"\r\n";
             }
             cbStart.SelectedIndex = 0;
             cbEnd.SelectedIndex = 0;
@@ -186,10 +188,13 @@ namespace road_network
                 lRes.Text = "not solution found";
             else
             {
+                List<String> Colors = new List<String>() { tbColor1.Text, tbColor2.Text, tbColor3.Text };
                 lRes.Text = "Colors\r\n";
                 foreach (Town t in graph.nodes())
-                    lRes.Text += t + " sc:" +(t.Color+1)+"\r\n"; 
+                    lRes.Text += t + "\t" +Colors[t.Color]+"\r\n"; 
             }
         }
+
+        
     }
 }

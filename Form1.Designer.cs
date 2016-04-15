@@ -49,9 +49,22 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.btnColor = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.tbColor3 = new System.Windows.Forms.TextBox();
+            this.tbColor2 = new System.Windows.Forms.TextBox();
+            this.tbColor1 = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUDtownPerTour)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // treeRes
@@ -109,13 +122,15 @@
             // 
             // lRes
             // 
-            this.lRes.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lRes.Location = new System.Drawing.Point(0, 406);
+            this.lRes.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.lRes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lRes.Location = new System.Drawing.Point(10, 10);
+            this.lRes.Margin = new System.Windows.Forms.Padding(10);
             this.lRes.Multiline = true;
             this.lRes.Name = "lRes";
             this.lRes.ReadOnly = true;
             this.lRes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.lRes.Size = new System.Drawing.Size(856, 256);
+            this.lRes.Size = new System.Drawing.Size(881, 242);
             this.lRes.TabIndex = 7;
             // 
             // panel1
@@ -129,7 +144,7 @@
             this.panel1.Controls.Add(this.treeRes);
             this.panel1.Controls.Add(this.cbStart);
             this.panel1.Controls.Add(this.cbEnd);
-            this.panel1.Location = new System.Drawing.Point(23, 23);
+            this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(256, 377);
             this.panel1.TabIndex = 8;
@@ -185,7 +200,7 @@
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.checkedListBoxFarm);
             this.panel2.Controls.Add(this.btnTour);
-            this.panel2.Location = new System.Drawing.Point(301, 23);
+            this.panel2.Location = new System.Drawing.Point(274, 12);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(426, 377);
             this.panel2.TabIndex = 9;
@@ -194,7 +209,7 @@
             // 
             this.lMaxTownTour.AutoSize = true;
             this.lMaxTownTour.Enabled = false;
-            this.lMaxTownTour.Location = new System.Drawing.Point(241, 105);
+            this.lMaxTownTour.Location = new System.Drawing.Point(246, 110);
             this.lMaxTownTour.Name = "lMaxTownTour";
             this.lMaxTownTour.Size = new System.Drawing.Size(82, 13);
             this.lMaxTownTour.TabIndex = 10;
@@ -203,7 +218,7 @@
             // nUDtownPerTour
             // 
             this.nUDtownPerTour.Enabled = false;
-            this.nUDtownPerTour.Location = new System.Drawing.Point(344, 103);
+            this.nUDtownPerTour.Location = new System.Drawing.Point(344, 108);
             this.nUDtownPerTour.Name = "nUDtownPerTour";
             this.nUDtownPerTour.Size = new System.Drawing.Size(75, 20);
             this.nUDtownPerTour.TabIndex = 9;
@@ -211,7 +226,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(225, 80);
+            this.checkBox1.Location = new System.Drawing.Point(222, 85);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(162, 17);
             this.checkBox1.TabIndex = 8;
@@ -259,23 +274,122 @@
             // 
             // btnColor
             // 
-            this.btnColor.Location = new System.Drawing.Point(757, 174);
+            this.btnColor.Location = new System.Drawing.Point(3, 149);
             this.btnColor.Name = "btnColor";
-            this.btnColor.Size = new System.Drawing.Size(75, 221);
+            this.btnColor.Size = new System.Drawing.Size(174, 221);
             this.btnColor.TabIndex = 10;
             this.btnColor.Text = "Coloration";
             this.btnColor.UseVisualStyleBackColor = true;
             this.btnColor.Click += new System.EventHandler(this.btnColor_Click);
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.panel5);
+            this.panel3.Controls.Add(this.panel1);
+            this.panel3.Controls.Add(this.panel2);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(901, 400);
+            this.panel3.TabIndex = 11;
+            // 
+            // panel5
+            // 
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel5.Controls.Add(this.tbColor3);
+            this.panel5.Controls.Add(this.tbColor2);
+            this.panel5.Controls.Add(this.tbColor1);
+            this.panel5.Controls.Add(this.label11);
+            this.panel5.Controls.Add(this.label10);
+            this.panel5.Controls.Add(this.label9);
+            this.panel5.Controls.Add(this.label8);
+            this.panel5.Controls.Add(this.btnColor);
+            this.panel5.Location = new System.Drawing.Point(707, 12);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(184, 377);
+            this.panel5.TabIndex = 11;
+            // 
+            // tbColor3
+            // 
+            this.tbColor3.Location = new System.Drawing.Point(68, 109);
+            this.tbColor3.Name = "tbColor3";
+            this.tbColor3.Size = new System.Drawing.Size(109, 20);
+            this.tbColor3.TabIndex = 17;
+            this.tbColor3.Text = "sculpt 3";
+            // 
+            // tbColor2
+            // 
+            this.tbColor2.Location = new System.Drawing.Point(68, 80);
+            this.tbColor2.Name = "tbColor2";
+            this.tbColor2.Size = new System.Drawing.Size(109, 20);
+            this.tbColor2.TabIndex = 16;
+            this.tbColor2.Text = "sculpt 2";
+            // 
+            // tbColor1
+            // 
+            this.tbColor1.Location = new System.Drawing.Point(68, 49);
+            this.tbColor1.Name = "tbColor1";
+            this.tbColor1.Size = new System.Drawing.Size(109, 20);
+            this.tbColor1.TabIndex = 15;
+            this.tbColor1.Text = "sculpt 1";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(4, 80);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(61, 13);
+            this.label11.TabIndex = 14;
+            this.label11.Text = "Color 2 (7) :";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(4, 108);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(61, 13);
+            this.label10.TabIndex = 13;
+            this.label10.Text = "Color 3 (3) :";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(4, 52);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(58, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "Color 1 (8):";
+            // 
+            // label8
+            // 
+            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label8.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(0, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(180, 23);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "3-Coloration";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.lRes);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 400);
+            this.panel4.Margin = new System.Windows.Forms.Padding(10);
+            this.panel4.Name = "panel4";
+            this.panel4.Padding = new System.Windows.Forms.Padding(10);
+            this.panel4.Size = new System.Drawing.Size(901, 262);
+            this.panel4.TabIndex = 12;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(856, 662);
-            this.Controls.Add(this.btnColor);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.lRes);
+            this.ClientSize = new System.Drawing.Size(901, 662);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel3);
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
@@ -283,8 +397,12 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUDtownPerTour)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -311,6 +429,16 @@
         private System.Windows.Forms.ComboBox cbRouteStart;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnColor;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.TextBox tbColor3;
+        private System.Windows.Forms.TextBox tbColor2;
+        private System.Windows.Forms.TextBox tbColor1;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
     }
 }
 
