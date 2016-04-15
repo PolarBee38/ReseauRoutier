@@ -209,16 +209,6 @@ namespace road_network
                     res.totalCost += graph.getCost(currentNode, currentPath.First());
                 }
                 maxCost = 0;
-                //stop research if next iteration will be worst than the best result :
-                //test cost to furthest node + back to start.
-                //stop if cost >= best result found
-                foreach (TNode next in nodeToCheck)
-                {
-                    currentCost = 2 * graph.getCost(next, currentPath.First());
-                    maxCost = Math.Max(currentCost, maxCost);
-                }
-                if (maxCost + res.totalCost >= minValue)
-                    return;
                 //here, currentNode is the starting node because of the constraint
                 currentNode = currentPath.First();
             }
